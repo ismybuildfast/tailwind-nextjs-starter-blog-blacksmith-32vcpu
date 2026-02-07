@@ -11,6 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Record runner start time
+        id: runner_time
+        run: echo "runner_ts=$(date +%s)" >> $GITHUB_OUTPUT
+
+
       - name: Setup Node.js
         uses: useblacksmith/setup-node@v5
         with:
@@ -39,6 +44,7 @@ jobs:
           source ./build
           echo "build_id=$build_id" >> $GITHUB_OUTPUT
           echo "push_ts=$push_ts" >> $GITHUB_OUTPUT
+          echo "runner_ts=${{ steps.runner_time.outputs.runner_ts }}" >> $GITHUB_OUTPUT
 
       # --- COLD BUILD & DEPLOY ---
       - name: Cold build and deploy
@@ -103,6 +109,7 @@ jobs:
           cat > .vercel/output/static/bench.txt << EOF
           build_id=$build_id
           push_ts=${{ steps.build_info.outputs.push_ts }}
+          runner_ts=${{ steps.build_info.outputs.runner_ts }}
           start_ts=${{ steps.cold.outputs.start_ts }}
           end_ts=${{ steps.cold.outputs.end_ts }}
           ready_ts=${{ steps.cold.outputs.ready_ts }}
@@ -146,6 +153,7 @@ jobs:
           cat > .vercel/output/static/bench.txt << EOF
           build_id=$build_id
           push_ts=${{ steps.build_info.outputs.push_ts }}
+          runner_ts=${{ steps.build_info.outputs.runner_ts }}
           start_ts=${{ steps.cold.outputs.start_ts }}
           end_ts=${{ steps.cold.outputs.end_ts }}
           ready_ts=${{ steps.cold.outputs.ready_ts }}
