@@ -78,6 +78,11 @@ jobs:
           
           # Build
           START_TS=$(date +%s)
+          # Build using Next.js directly (preserves .next/cache for incremental)
+          rm -rf .next
+          npm run build-only
+          
+          # Package for Vercel deployment
           vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
           END_TS=$(date +%s)
           
@@ -118,6 +123,10 @@ jobs:
           
           # Build
           START_TS=$(date +%s)
+          # Build using Next.js directly (reuses .next/cache)
+          npm run build-only
+          
+          # Package for Vercel deployment
           vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
           END_TS=$(date +%s)
           
